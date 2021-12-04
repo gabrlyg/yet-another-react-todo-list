@@ -1,5 +1,4 @@
-import * as React from 'react'
-import { ToDoList } from '../../src/components/ToDoList'
+import ToDoList from '@qriousgabriel/yet-another-react-todo-list'
 import '@fontsource/patrick-hand-sc'
 import './styles.css'
 
