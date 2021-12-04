@@ -22,12 +22,11 @@ interface ToDoItemProps {
 
 const Wrapper = styled.div`
   max-width: 42rem;
-  min-height: 20rem;
   margin-left: auto;
   margin-right: auto;
   padding-top: 2rem;
   padding-bottom: 2rem;
-  background-color: #c8c0d1;
+  background-color: #f7e754;
   display: flex;
   flex-direction: column;
   text-align: left;
@@ -36,34 +35,43 @@ const Wrapper = styled.div`
 const StyledList = styled.ul`
   list-style: none;
   padding: 0;
+  height: 20rem;
+  overflow-y: scroll;
 `
 const StyledListItem = styled.li<ToDoItemProps>`
   padding-left: 2rem;
   padding-right: 2rem;
   text-decoration: ${({ completed }) => (completed ? 'line-through' : 'none')};
   cursor: pointer;
+  word-wrap: break-word;
 
   &:hover {
-    background-color: #c5b8d4;
+    background-color: #ffde47;
   }
 `
 const StyledInput = styled.input`
   margin-left: 2rem;
   margin-right: 2rem;
-  border: none;
   line-height: 2rem;
   outline: 2px solid transparent;
-  transition: outline 400ms;
+  transition: border 400ms;
+  padding: 8px;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 2px solid #edc615;
+  font-family: monospace;
+  font-weight: 700;
+  font-size: inherit;
 
   :focus {
-    outline: 2px solid red;
-    outline-offset: 2px;
+    border-bottom: 2px solid #dba400;
   }
 `
 
 export const ToDoList = () => {
   const reducer = (state: ToDo[], action: ToDoAction): ToDo[] => {
-    console.log('action:', action)
     switch (action.type) {
       case ToDoActionType.ADD:
         return [
@@ -128,10 +136,6 @@ export const ToDoList = () => {
       setNewToDo('')
     }
   }
-
-  // React.useEffect(() => {
-  //   console.log('toDos:', toDoList)
-  // }, [toDoList])
 
   return (
     <Wrapper>
