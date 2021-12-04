@@ -1,4 +1,4 @@
-import { ToDoList } from '../../components/ToDoList'
+import { ToDoList } from '../../src/components/ToDoList'
 import '@fontsource/patrick-hand-sc'
 import './styles.css'
 
