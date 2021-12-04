@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Yet another React ToDo List",
   "keywords": [],
-  "main": "dist/index.tsx",
+  "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.ts",
   "dependencies": {
@@ -14,16 +14,21 @@
     "@types/react": "17.0.20",
     "@types/react-dom": "17.0.9",
     "@types/styled-components": "5.1.15",
+    "babel": "^6.23.0",
+    "babel-plugin-styled-components": "^2.0.2",
     "cross-env": "^7.0.3",
     "eslint": "^8.4.0",
     "jest": "^27.4.3",
     "microbundle-crl": "^0.13.11",
     "npm-run-all": "^4.1.5",
-    "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-is": "^17.0.2",
     "react-scripts": "4.0.3",
-    "styled-components": "5.3.3",
     "typescript": "4.4.2"
+  },
+  "peerDependencies": {
+    "react": "17.0.2",
+    "styled-components": "5.3.3"
   },
   "scripts": {
     "build": "microbundle-crl --no-compress --format modern,cjs",
