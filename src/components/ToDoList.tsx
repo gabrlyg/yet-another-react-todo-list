@@ -5,7 +5,17 @@ interface ToDo {
   toDo: string
   completed: boolean
 }
-
+enum ToDoActionType {
+  TOGGLE,
+  ADD,
+  EDIT,
+  DELETE,
+}
+interface ToDoAction {
+  type: ToDoActionType
+  index?: number
+  toDo?: string
+}
 interface ToDoItemProps {
   completed: boolean
 }
@@ -52,7 +62,40 @@ const StyledInput = styled.input`
 `
 
 export const ToDoList = () => {
-  const [toDoList, setToDoList] = React.useState<ToDo[]>([
+  const reducer = (state: ToDo[], action: ToDoAction): ToDo[] => {
+    console.log('action:', action)
+    switch (action.type) {
+      case ToDoActionType.ADD:
+        return [
+          ...state,
+          {
+            toDo: action.toDo!,
+            completed: false,
+          },
+        ]
+      case ToDoActionType.DELETE:
+        return state.filter((_, index) => index != action.index)
+      case ToDoActionType.EDIT:
+        return state.map((value, index) =>
+          index == action.index
+            ? {
+                ...value,
+                toDo: action.toDo!,
+              }
+            : value
+        )
+      case ToDoActionType.TOGGLE:
+        return state.map((value, index) =>
+          index == action.index
+            ? {
+                ...value,
+                completed: !value.completed,
+              }
+            : value
+        )
+    }
+  }
+  const [toDoList, dispatchToDo] = React.useReducer(reducer, [
     {
       toDo: 'lol',
       completed: false,
@@ -62,16 +105,33 @@ export const ToDoList = () => {
       completed: true,
     },
   ])
+  const [newToDo, setNewToDo] = React.useState('')
   const inputRef = React.useRef<HTMLInputElement>(null)
   const toggleToDo = (event: React.MouseEvent<HTMLLIElement>) => {
     event.preventDefault()
     const { target } = event
     const index = (target as HTMLLIElement).attributes['data-attribute-index']
       .value
-    const newToDoList = [...toDoList]
-    newToDoList[index].completed = !newToDoList[index].completed
-    setToDoList(newToDoList)
+    dispatchToDo({
+      type: ToDoActionType.TOGGLE,
+      index,
+    })
   }
+  const handleInputChange = () => {
+    const value = inputRef?.current?.value || ''
+    setNewToDo(value)
+  }
+  const handleInputKeyDown = (event: React.KeyboardEvent) => {
+    const { key } = event
+    if (key === 'Enter') {
+      dispatchToDo({ type: ToDoActionType.ADD, toDo: newToDo })
+      setNewToDo('')
+    }
+  }
+
+  // React.useEffect(() => {
+  //   console.log('toDos:', toDoList)
+  // }, [toDoList])
 
   return (
     <Wrapper>
@@ -86,7 +146,13 @@ export const ToDoList = () => {
           </StyledListItem>
         ))}
       </StyledList>
-      <StyledInput ref={inputRef} placeholder={'Add new to-do to list...'} />
+      <StyledInput
+        ref={inputRef}
+        placeholder={'Add new to-do to list...'}
+        value={newToDo}
+        onChange={handleInputChange}
+        onKeyDown={handleInputKeyDown}
+      />
     </Wrapper>
   )
 }
