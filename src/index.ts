@@ -1,1 +1,2 @@
-export { ToDoList as default } from './components/ToDoList'
+import { ToDoList } from './components/ToDoList'
+export default ToDoList
