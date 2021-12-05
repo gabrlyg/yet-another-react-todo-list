@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { AnimatedList } from './AnimatedList'
-import { StyledListItem } from './ListItem'
+import { ToDoItem } from './ToDoItem'
 
 interface ToDo {
   id: string
@@ -112,11 +112,10 @@ export const ToDoList = () => {
   const [toDoList, dispatchToDo] = React.useReducer(reducer, [])
   const [newToDo, setNewToDo] = React.useState('')
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const toggleToDo = (event: React.MouseEvent<HTMLLIElement>) => {
-    event.preventDefault()
-    const { target } = event
+  const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.stopPropagation()
     const index = parseInt(
-      (target as HTMLLIElement).attributes['data-attribute-index'].value
+      event.target.attributes['data-attribute-index'].value
     )
     dispatchToDo({
       type: ToDoActionType.TOGGLE,
@@ -139,14 +138,14 @@ export const ToDoList = () => {
     <Wrapper>
       <AnimatedList>
         {toDoList.map(({ toDo, id, completed }, index) => (
-          <StyledListItem
+          <ToDoItem
             key={id}
             completed={completed}
-            data-attribute-index={index}
-            onClick={toggleToDo}
+            index={index}
+            onToggle={handleToggle}
             ref={React.createRef()}>
             {toDo}
-          </StyledListItem>
+          </ToDoItem>
         ))}
       </AnimatedList>
       <StyledInput
