@@ -1,7 +1,10 @@
 import * as React from 'react'
 import styled from 'styled-components'
+import { AnimatedList } from './AnimatedList'
+import { StyledListItem } from './ListItem'
 
 interface ToDo {
+  id: string
   toDo: string
   completed: boolean
 }
@@ -16,9 +19,6 @@ interface ToDoAction {
   index?: number
   toDo?: string
 }
-interface ToDoItemProps {
-  completed: boolean
-}
 
 const Wrapper = styled.div`
   max-width: 42rem;
@@ -32,23 +32,7 @@ const Wrapper = styled.div`
   text-align: left;
   justify-content: space-between;
 `
-const StyledList = styled.ul`
-  list-style: none;
-  padding: 0;
-  height: 20rem;
-  overflow-y: scroll;
-`
-const StyledListItem = styled.li<ToDoItemProps>`
-  padding-left: 2rem;
-  padding-right: 2rem;
-  text-decoration: ${({ completed }) => (completed ? 'line-through' : 'none')};
-  cursor: pointer;
-  word-wrap: break-word;
 
-  &:hover {
-    background-color: #ffde47;
-  }
-`
 const StyledInput = styled.input`
   margin-left: 2rem;
   margin-right: 2rem;
@@ -70,6 +54,24 @@ const StyledInput = styled.input`
   }
 `
 
+const markComplete = (state: ToDo[], index: number) => {
+  const newState = state.filter((_, i) => i !== index)
+  newState.push({
+    ...state[index],
+    completed: true,
+  })
+  return newState
+}
+const markNotComplete = (state: ToDo[], index: number) => {
+  const notCompleteList = state.filter((item) => !item.completed)
+  const completeList = state.filter((item, i) => item.completed && i !== index)
+  notCompleteList.push({
+    ...state[index],
+    completed: false,
+  })
+  return [...notCompleteList, ...completeList]
+}
+
 export const ToDoList = () => {
   const reducer = (state: ToDo[], action: ToDoAction): ToDo[] => {
     switch (action.type) {
@@ -77,6 +79,7 @@ export const ToDoList = () => {
         return [
           ...state,
           {
+            id: `todo-${Date.now()}`,
             toDo: action.toDo!,
             completed: false,
           },
@@ -93,33 +96,25 @@ export const ToDoList = () => {
             : value
         )
       case ToDoActionType.TOGGLE:
-        return state.map((value, index) =>
-          index == action.index
-            ? {
-                ...value,
-                completed: !value.completed,
-              }
-            : value
-        )
+        const index = action.index!
+        const isCompleted = state[index].completed
+        const newState = isCompleted
+          ? markNotComplete(state, index)
+          : markComplete(state, index)
+        return newState
+      default:
+        return []
     }
   }
-  const [toDoList, dispatchToDo] = React.useReducer(reducer, [
-    {
-      toDo: 'lol',
-      completed: false,
-    },
-    {
-      toDo: 'abcd',
-      completed: true,
-    },
-  ])
+  const [toDoList, dispatchToDo] = React.useReducer(reducer, [])
   const [newToDo, setNewToDo] = React.useState('')
   const inputRef = React.useRef<HTMLInputElement>(null)
   const toggleToDo = (event: React.MouseEvent<HTMLLIElement>) => {
     event.preventDefault()
     const { target } = event
-    const index = (target as HTMLLIElement).attributes['data-attribute-index']
-      .value
+    const index = parseInt(
+      (target as HTMLLIElement).attributes['data-attribute-index'].value
+    )
     dispatchToDo({
       type: ToDoActionType.TOGGLE,
       index,
@@ -139,17 +134,18 @@ export const ToDoList = () => {
 
   return (
     <Wrapper>
-      <StyledList>
-        {toDoList.map((toDo, index) => (
+      <AnimatedList>
+        {toDoList.map(({ toDo, id, completed }, index) => (
           <StyledListItem
-            key={`todo-${index}`}
-            completed={toDo.completed}
+            key={id}
+            completed={completed}
             data-attribute-index={index}
-            onClick={toggleToDo}>
-            {toDo.toDo}
+            onClick={toggleToDo}
+            ref={React.createRef()}>
+            {toDo}
           </StyledListItem>
         ))}
-      </StyledList>
+      </AnimatedList>
       <StyledInput
         ref={inputRef}
         placeholder={'Add new to-do to list...'}
