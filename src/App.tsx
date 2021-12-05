@@ -1,5 +1,4 @@
-import ToDoList from '@qriousgabriel/yet-another-react-todo-list'
-import '@fontsource/patrick-hand-sc'
+import ToDoList from './lib'
 import './styles.css'
 
 export default function App() {
