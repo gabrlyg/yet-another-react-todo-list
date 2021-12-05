@@ -112,6 +112,7 @@ export const ToDoList = () => {
   const [toDoList, dispatchToDo] = React.useReducer(reducer, [])
   const [newToDo, setNewToDo] = React.useState('')
   const inputRef = React.useRef<HTMLInputElement>(null)
+
   const handleToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation()
     const index = parseInt(
@@ -142,7 +143,7 @@ export const ToDoList = () => {
             key={id}
             completed={completed}
             index={index}
-            onToggle={handleToggle}
+            onToggleComplete={handleToggle}
             ref={React.createRef()}>
             {toDo}
           </ToDoItem>

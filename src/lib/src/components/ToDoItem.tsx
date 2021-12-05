@@ -9,7 +9,7 @@ interface ToDoItemProps extends TogglableProps {
   children: React.ReactNode
   index: number
   key: string
-  onToggle: React.ChangeEventHandler<HTMLInputElement>
+  onToggleComplete: React.ChangeEventHandler<HTMLInputElement>
 }
 
 const StyledListItem = styled.li<TogglableProps>`
@@ -37,19 +37,20 @@ const StyledLabel = styled.label<TogglableProps>`
     width: 40px;
     height: 40px;
     border: 2px solid black;
-    border-radius: 2px;
+    border-radius: 50%;
+    background-color: ${(props) => (props.completed ? 'black' : 'transparent')};
   }
   &:after {
     opacity: ${(props) => (props.completed ? '1' : '0')};
     position: absolute;
-    left: 8px;
-    top: 11px;
+    left: 10px;
+    top: 13px;
     content: '';
-    width: 24px;
-    height: 12px;
+    width: 20px;
+    height: 10px;
     border-width: 0 0 5px 5px;
     border-style: solid;
-    border-color: black;
+    border-color: #f7e754;
     transform: rotate(-45deg);
   }
 `
@@ -67,7 +68,7 @@ const StyledCheckBox = styled.input`
 
 export const ToDoItem = React.forwardRef(
   (
-    { completed, children, onToggle, index, ...props }: ToDoItemProps,
+    { completed, children, onToggleComplete, index, ...props }: ToDoItemProps,
     ref: React.ForwardedRef<HTMLLIElement>
   ) => {
     return (
@@ -75,10 +76,17 @@ export const ToDoItem = React.forwardRef(
         <ToDoItemWrapper>
           <StyledCheckBox
             type="checkbox"
-            onChange={onToggle}
+            onChange={onToggleComplete}
             data-attribute-index={index}
+            id={`checkbox-${index}`}
           />
-          <StyledLabel completed={completed}>{children}</StyledLabel>
+          <StyledLabel
+            completed={completed}
+            htmlFor={`checkbox-${index}`}
+            data-attribute-index={index}
+            aria-hidden={true}>
+            {children}
+          </StyledLabel>
         </ToDoItemWrapper>
       </StyledListItem>
     )
