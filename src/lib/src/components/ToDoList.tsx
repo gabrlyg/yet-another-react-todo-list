@@ -31,6 +31,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   text-align: left;
   justify-content: space-between;
+  font-family: monospace;
+  font-size: 24px;
+  font-weight: 700;
 `
 
 const StyledInput = styled.input`
