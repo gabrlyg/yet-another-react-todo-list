@@ -9,11 +9,13 @@ Just another To-do list built with React that emulates the animation in a checkl
 **NPM:**
 
 ```sh
+npm install
 npm run start
 ```
 
 **Yarn**:
 
 ```sh
+yarn
 yarn start
 ```
