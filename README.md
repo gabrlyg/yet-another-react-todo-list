@@ -2,6 +2,8 @@
 
 Just another To-do list built with React that emulates the animation in a checklist from iOS Notes app.
 
+![Demo](demo.gif)
+
 ## Usage
 
 **NPM:**
